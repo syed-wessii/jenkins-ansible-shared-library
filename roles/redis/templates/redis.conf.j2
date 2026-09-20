@@ -1,0 +1,16 @@
+bind {{ redis_bind }}
+port {{ redis_port }}
+
+daemonize no
+supervised systemd
+
+dir {{ redis_data_dir }}
+logfile {{ redis_log_dir }}/redis.log
+
+maxmemory {{ redis_maxmemory }}
+maxmemory-policy {{ redis_maxmemory_policy }}
+
+appendonly {{ redis_appendonly }}
+protected-mode {{ redis_protected_mode }}
+
+user default on nopass ~* &* +@all
