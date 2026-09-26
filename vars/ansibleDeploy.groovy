@@ -1,44 +1,36 @@
-def call(String configFile) {
+def config
 
-    node {
+def readConfig(String configFile) {
+    config = readProperties file: configFile
 
-        stage('Clone') {
-            checkout scm
-        }
+    echo "Configuration loaded"
+    echo "Environment: ${config.ENVIRONMENT}"
+    echo "Code Base Path: ${config.CODE_BASE_PATH}"
+}
 
-        def config = readProperties file: configFile
+def cloneCode() {
+    echo "Cloning project code"
+    checkout scm
+}
 
-        def slackChannel = config.SLACK_CHANNEL_NAME
-        def environment = config.ENVIRONMENT
-        def codeBasePath = config.CODE_BASE_PATH
-        def actionMessage = config.ACTION_MESSAGE
-        def keepApprovalStage = config.KEEP_APPROVAL_STAGE.toBoolean()
+def userApproval() {
+    def keepApprovalStage = config.KEEP_APPROVAL_STAGE.toBoolean()
 
-        stage('User Approval') {
-            if (keepApprovalStage) {
-                input message: "Deploy to ${environment}?", ok: "Approve"
-            } else {
-                echo "Approval stage skipped"
-            }
-        }
-
-        stage('Playbook Execution') {
-            dir(codeBasePath) {
-                sh 'ansible-playbook -i hosts assignment6.yml'
-            }
-        }
-
-        stage('Notification') {
-            echo "Sending notification"
-            echo "Channel: ${slackChannel}"
-            echo "Message: ${actionMessage}"
-        }
-
-        echo "Starting Ansible deployment"
-        echo "Environment: ${environment}"
-        echo "Code Base Path: ${codeBasePath}"
-        echo "Slack Channel: ${slackChannel}"
-        echo "Action Message: ${actionMessage}"
-        echo "Keep Approval Stage: ${keepApprovalStage}"
+    if (keepApprovalStage) {
+        input message: "Deploy to ${config.ENVIRONMENT}?", ok: "Approve"
+    } else {
+        echo "Approval stage skipped"
     }
+}
+
+def executePlaybook() {
+    dir(config.CODE_BASE_PATH) {
+        sh 'ansible-playbook -i hosts assignment6.yml'
+    }
+}
+
+def notify() {
+    echo "Sending notification"
+    echo "Channel: ${config.SLACK_CHANNEL_NAME}"
+    echo "Message: ${config.ACTION_MESSAGE}"
 }
