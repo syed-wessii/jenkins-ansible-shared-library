@@ -29,7 +29,7 @@ def executePlaybook() {
     }
 }
 
-def notify() {
+def sendNotification() {
     slackSend(
         channel: config.SLACK_CHANNEL_NAME,
         message: config.ACTION_MESSAGE
