@@ -24,7 +24,7 @@ def call(String configFile) {
 
         stage('Playbook Execution') {
             dir(codeBasePath) {
-                sh 'ansible-playbook -i hosts site.yml'
+                sh 'ansible-playbook -i hosts assignment6.yml'
             }
         }
 

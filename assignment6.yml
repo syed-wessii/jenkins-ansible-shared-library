@@ -1,0 +1,14 @@
+---
+- name: Assignment 6 Deployment
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Verify server is reachable
+      ansible.builtin.ping:
+
+    - name: Create deployment marker
+      ansible.builtin.file:
+        path: /tmp/assignment6-deployed
+        state: touch
+        mode: "0644"
