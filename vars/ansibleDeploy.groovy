@@ -1,5 +1,9 @@
 def call(String configFile) {
 
+    stage('Clone') {
+        checkout scm
+    }
+
     def config = readProperties file: configFile
 
     def slackChannel = config.SLACK_CHANNEL_NAME
@@ -7,10 +11,6 @@ def call(String configFile) {
     def codeBasePath = config.CODE_BASE_PATH
     def actionMessage = config.ACTION_MESSAGE
     def keepApprovalStage = config.KEEP_APPROVAL_STAGE.toBoolean()
-
-    stage('Clone') {
-        checkout scm
-    }
 
     stage('User Approval') {
         if (keepApprovalStage) {
