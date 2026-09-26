@@ -30,7 +30,8 @@ def executePlaybook() {
 }
 
 def notify() {
-    echo "Sending notification"
-    echo "Channel: ${config.SLACK_CHANNEL_NAME}"
-    echo "Message: ${config.ACTION_MESSAGE}"
+    slackSend(
+        channel: config.SLACK_CHANNEL_NAME,
+        message: config.ACTION_MESSAGE
+    )
 }
