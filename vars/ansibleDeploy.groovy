@@ -34,4 +34,15 @@ def sendNotification() {
         channel: config.SLACK_CHANNEL_NAME,
         message: config.ACTION_MESSAGE
     )
+
+    emailext(
+        to: config.EMAIL_RECIPIENT,
+        subject: "Jenkins Deployment - ${config.ENVIRONMENT}",
+        body: """Deployment completed successfully.
+
+Environment: ${config.ENVIRONMENT}
+Message: ${config.ACTION_MESSAGE}
+Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}
+"""
+    )
 }
